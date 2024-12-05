@@ -1,3 +1,5 @@
+"""Compute all the fibs"""
+
 def fib(n):
     if n < 0:
         raise ValueError(f"n must be >=0, got {n}")
