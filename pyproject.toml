@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "test_sonar"
+version = "0.1.0"
+
+description = "Test sonarqube integration on github"
+readme = "README.md"
+authors = [
+    {name = "Maximilian Linhoff", email = "maximilian.linhoff@tu-dortmund.de"},
+]
+license = {text = "MIT License"}
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+
+tests = [
+    "pytest >= 7.0",
+    "pytest-cov",
+]
+
+[tool.pytest.ini_options]
+minversion = "7"
+testpaths = ["src"]
+log_cli_level = "INFO"
+xfail_strict = true
+
+# print summary of failed tests, force errors if settings are misspelled
+addopts = ["-ra", "--strict-config", "--strict-markers"]
+norecursedirs = [
+    ".git",
+    "_build",
+    "build",
+]
+
+[tool.coverage.run]
+include = ["src/*"]
+relative_files = true
