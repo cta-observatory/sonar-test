@@ -35,7 +35,6 @@ jobs:
       - uses: actions/checkout@v4
         if: github.event.workflow_run.event == 'pull_request'
         with:
-          repository: ${{ github.event.workflow_run.pull_requests[0].base.repo.url }}
           ref: refs/pull/${{ github.event.workflow_run.pull_requests[0].number }}/merge
           fetch-depth: 0
 
