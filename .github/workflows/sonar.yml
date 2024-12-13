@@ -26,9 +26,17 @@ jobs:
           echo "$GITHUB_CONTEXT"
 
       - uses: actions/checkout@v4
+        if: github.event.workflow_run.event != 'pull_request'
         with:
           repository: ${{ github.event.workflow_run.head_repository.full_name }}
           ref: ${{ github.event.workflow_run.head_branch }}
+          fetch-depth: 0
+
+      - uses: actions/checkout@v4
+        if: github.event.workflow_run.event == 'pull_request'
+        with:
+          repository: ${{ github.event.workflow_run.pull_requests[0].base.repo.url }}
+          ref: refs/pull/${{ github.event.workflow_run.pull_requests[0].number }}/merge
           fetch-depth: 0
 
       - name: 'Download code coverage'
