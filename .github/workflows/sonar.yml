@@ -25,43 +25,6 @@ jobs:
         run: |
           echo "$GITHUB_CONTEXT"
 
-      - name: Checkout branch or tag
-        uses: actions/checkout@v4
-        if: github.event.workflow_run.event != 'pull_request'
-        with:
-          repository: ${{ github.event.workflow_run.head_repository.full_name }}
-          ref: ${{ github.event.workflow_run.head_branch }}
-          fetch-depth: 0
-
-      # somewhat convoluted way of getting the PR number we need for the checkout step
-      # as the pr number is not contained in the github payload we receive if the PR comes from a fork
-      - name: Get PR Number
-        if: github.event.workflow_run.event == 'pull_request'
-        run: |
-          PR_JSON=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/pulls?head=${{ github.event.workflow_run.head_repository.owner.login }}:${{ github.event.workflow_run.head_branch }}&state=open")
-          
-          PR_NUMBER=$(echo "$PR_JSON" | jq -r '.[0].number')
-
-          if [[ -z "$PR_NUMBER" || "$PR_NUMBER" == "null" ]]; then
-            echo "No matching PR found"
-            exit 1
-          fi
-
-          echo "PR_NUMBER=$PR_NUMBER" >> "$GITHUB_ENV"
-
-      - name: Checkout Pull Request merge result
-        uses: actions/checkout@v4
-        if: github.event.workflow_run.event == 'pull_request'
-        with:
-          ref: refs/pull/${{ env.PR_NUMBER }}/merge
-          fetch-depth: 0
-
-      - name: Git info
-        run: |
-          git status
-          git log -n 5 --oneline
-
       - name: 'Download code coverage'
         uses: actions/github-script@v7
         with:
@@ -93,6 +56,26 @@ jobs:
         run: |
           cat coverage/sonar_env >> "$GITHUB_ENV"
           cat coverage/sonar_env
+
+      - name: Checkout branch or tag
+        uses: actions/checkout@v4
+        if: github.event.workflow_run.event != 'pull_request'
+        with:
+          repository: ${{ github.event.workflow_run.head_repository.full_name }}
+          ref: ${{ github.event.workflow_run.head_branch }}
+          fetch-depth: 0
+
+      - name: Checkout Pull Request merge result
+        uses: actions/checkout@v4
+        if: github.event.workflow_run.event == 'pull_request'
+        with:
+          ref: refs/pull/${{ env.PR_NUMBER }}/merge
+          fetch-depth: 0
+
+      - name: Git info
+        run: |
+          git status
+          git log -n 5 --oneline
 
       - name: Sonarqube Scan
         uses: SonarSource/sonarqube-scan-action@v4
