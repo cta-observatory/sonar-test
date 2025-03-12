@@ -9,6 +9,7 @@ def test_fib(n, expected):
     assert fib(n) == expected
 
 def test_negative():
+    """Test we get a good error message for negative input."""
     from test_sonar import fib
 
     with pytest.raises(ValueError, match="n must be >=0, got -1"):
