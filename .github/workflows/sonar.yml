@@ -64,6 +64,7 @@ jobs:
           repository: ${{ github.event.workflow_run.head_repository.full_name }}
           ref: ${{ github.event.workflow_run.head_branch }}
           fetch-depth: 0
+          clean: false
 
       - name: Checkout Pull Request merge result
         uses: actions/checkout@v4
@@ -71,6 +72,7 @@ jobs:
         with:
           ref: refs/pull/${{ env.PR_NUMBER }}/merge
           fetch-depth: 0
+          clean: false
 
       - name: Git info
         run: |
