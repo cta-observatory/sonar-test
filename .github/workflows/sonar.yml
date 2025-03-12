@@ -47,18 +47,12 @@ jobs:
             fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/ctapipe-coverage-report.zip`, Buffer.from(download.data));
 
       - name: 'Unzip code coverage'
-        run: unzip ctapipe-coverage-report.zip -d coverage
-
-      - name: Check artifact
-        run: |
-          pwd
-          ls -l coverage
-          cat coverage/coverage.xml
+        run: unzip ctapipe-coverage-report.zip -d $HOME/coverage
 
       - name: Set environment
         run: |
-          cat coverage/sonar_env >> "$GITHUB_ENV"
-          cat coverage/sonar_env
+          cat $HOME/coverage/sonar_env >> "$GITHUB_ENV"
+          cat $HOME/coverage/sonar_env
 
       - name: Checkout branch or tag
         uses: actions/checkout@v4
@@ -77,9 +71,14 @@ jobs:
           fetch-depth: 0
           clean: false
 
+      - name: Check artifact
+        run: |
+          cp -r $HOME/coverage .
+          ls -l coverage
+          cat coverage/coverage.xml
+
       - name: Git info
         run: |
-          pwd
           git status
           git log -n 5 --oneline
           ls -l coverage
