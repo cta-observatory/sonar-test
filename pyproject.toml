@@ -4,9 +4,6 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "test_sonar"
-version = "0.1.0"
-
-
 description = "Test sonarqube integration on github"
 readme = "README.md"
 authors = [
