@@ -29,7 +29,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -e ".[tests]" setuptools_scm
+          pip install setuptools_scm
+          pip install -e ".[tests]"
 
       - name: Tests
         run: pytest --cov --cov-report=xml
