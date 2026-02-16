@@ -49,6 +49,7 @@ jobs:
           echo "SOURCE_BRANCH=${SOURCE_BRANCH}" >> sonar_env
           echo "TARGET_BRANCH=${TARGET_BRANCH}" >> sonar_env
           echo "PROJECT_VERSION=$(python -m setuptools_scm)" >> sonar_env
+          echo "REF_TYPE=${{ github.ref_type }}" >> sonar_env
           cat sonar_env
 
       # upload coverage report for sonar workflow
