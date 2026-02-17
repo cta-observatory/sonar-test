@@ -17,12 +17,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Python setup
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           check-latest: true
@@ -49,6 +49,7 @@ jobs:
           echo "SOURCE_BRANCH=${SOURCE_BRANCH}" >> sonar_env
           echo "TARGET_BRANCH=${TARGET_BRANCH}" >> sonar_env
           echo "PROJECT_VERSION=$(python -m setuptools_scm)" >> sonar_env
+          echo "REF_TYPE=${{ github.ref_type }}" >> sonar_env
           cat sonar_env
 
       # upload coverage report for sonar workflow
