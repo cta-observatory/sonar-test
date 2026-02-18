@@ -59,7 +59,7 @@ jobs:
         if: github.event.workflow_run.event != 'pull_request'
         with:
           repository: ${{ github.event.workflow_run.head_repository.full_name }}
-          ref: ${{ env.REF_TYPE == 'tag' && format('refs/tags/{0}', github.event.workflow_run.head_branch) || github.event.workflow_run.head_branch }}
+          ref: ${{ github.event.workflow_run.head_branch }}
           fetch-depth: 0
           clean: false
 
@@ -93,6 +93,7 @@ jobs:
         with:
           args: >
             -Dsonar.projectVersion=${{ env.PROJECT_VERSION }}
+            -Dsonar.branch.name=${{ github.event.workflow_run.head_branch }}
 
       - name: Sonarqube Scan PR
         if: github.event.workflow_run.event == 'pull_request'
