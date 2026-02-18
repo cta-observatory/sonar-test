@@ -59,7 +59,7 @@ jobs:
         if: github.event.workflow_run.event != 'pull_request'
         with:
           repository: ${{ github.event.workflow_run.head_repository.full_name }}
-          ref: ${{ github.event.workflow_run.head_branch }}
+          ref: ${{ env.REF_TYPE == 'tag' && format('refs/tags/{0}', github.event.workflow_run.head_branch) || github.event.workflow_run.head_branch }}
           fetch-depth: 0
           clean: false
 
