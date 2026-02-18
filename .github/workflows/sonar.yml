@@ -59,7 +59,7 @@ jobs:
         if: github.event.workflow_run.event != 'pull_request'
         with:
           repository: ${{ github.event.workflow_run.head_repository.full_name }}
-          ref: ${{ github.event.workflow_run.head_branch }}
+          ref: ${{ env.REF_TYPE == 'tag' && format('refs/tags/{0}', github.event.workflow_run.head_branch) || github.event.workflow_run.head_branch }}
           fetch-depth: 0
           clean: false
 
@@ -83,8 +83,8 @@ jobs:
           git log -n 5 --oneline
           ls -l coverage
 
-      - name: Sonarqube Scan Branch
-        if: github.event.workflow_run.event != 'pull_request' && env.REF_TYPE != 'tag'
+      - name: Sonarqube Scan Branch or Tag
+        if: github.event.workflow_run.event != 'pull_request'
         uses: SonarSource/sonarqube-scan-action@v7
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -93,17 +93,6 @@ jobs:
         with:
           args: >
             -Dsonar.projectVersion=${{ env.PROJECT_VERSION }}
-      
-      - name: Sonarqube Scan Tag
-        if: github.event.workflow_run.event != 'pull_request' && env.REF_TYPE == 'tag'
-        uses: SonarSource/sonarqube-scan-action@v7
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: https://sonar-ctao.zeuthen.desy.de
-        with:
-          args: >
-            "-Dsonar.projectVersion=${{ env.PROJECT_VERSION }}"
 
       - name: Sonarqube Scan PR
         if: github.event.workflow_run.event == 'pull_request'
